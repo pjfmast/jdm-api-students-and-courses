@@ -2,6 +2,8 @@ package avd.jdm.demostudentandcourses.controller;
 
 import avd.jdm.demostudentandcourses.domain.Student;
 import avd.jdm.demostudentandcourses.repository.StudentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import java.util.Optional;
 @RequestMapping("/students")
 public class StudentController {
     private final StudentRepository studentRepository;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public StudentController(StudentRepository studentRepository) {
@@ -27,6 +30,7 @@ public class StudentController {
        List<Student> found =  new ArrayList<>();
 
        if (name == null) {
+           // can be replaced using method reference, see CourseController
            found.addAll(studentRepository.findAll());
        } else {
            found.addAll(studentRepository.findStudentsByNameContainsIgnoreCase(name));
@@ -47,27 +51,6 @@ public class StudentController {
         return ResponseEntity.ok(found);
     }
 
-    @PostMapping
-    public ResponseEntity<Student> create(@RequestBody Student newStudent) {
-        try {
-            Student student = studentRepository.save(newStudent);
-            return new ResponseEntity<>(student, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
-        if (!studentRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        studentRepository.deleteById(id);
-
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/immature")
     public ResponseEntity<List<Student>> getImmatureStudents() {
         List<Student> found = new ArrayList<>();
@@ -84,6 +67,28 @@ public class StudentController {
         }
         return ResponseEntity.ok(found);
 
+    }
+
+    @PostMapping
+    public ResponseEntity<Student> create(@RequestBody Student newStudent) {
+        try {
+            Student student = studentRepository.save(newStudent);
+            return new ResponseEntity<>(student, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error in create a new student: " + newStudent, e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
+        if (!studentRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        studentRepository.deleteById(id);
+
+        return ResponseEntity.ok().build();
     }
 
 }

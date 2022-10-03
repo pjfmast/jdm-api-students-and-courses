@@ -7,19 +7,19 @@ import java.time.LocalDate;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     private String name;
     private LocalDate dateOfBirth;
 
+    // needed for jpa persistence
+    protected Student() {
+    }
     public Student(String name, LocalDate dateOfBirth) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
     }
 
-    public Student() {
-    }
 
     public Long getId() {
         return id;
