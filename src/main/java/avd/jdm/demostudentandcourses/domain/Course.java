@@ -1,16 +1,21 @@
 package avd.jdm.demostudentandcourses.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 // Note:
 // @Data give a performance warning. See https://www.jpa-buddy.com/blog/lombok-and-jpa-what-may-go-wrong/
+// when we extend with a new field: add getter/setter for thees
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 public class Course {
 
     @Id
@@ -23,10 +28,17 @@ public class Course {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    protected Course() {
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "course_coordinator_id")
+    private CourseCoordinator courseCoordinator;
 
-    protected Course(String title, String description, int capacity, LocalDate startDate, LocalDate endDate) {
+    // Add many-to-many relation between Course and Student.
+    // performance advice ManyToMany: use Set<T> instead of List<T>
+    // todo workshop lesson 7-2b: add many-to-many relation between course and student
+    @ManyToMany(mappedBy = "courses")
+    private Set<Student> students;
+
+    public Course(String title, String description, int capacity, LocalDate startDate, LocalDate endDate) {
         this.title = title;
         this.description = description;
         this.capacity = capacity;
@@ -34,51 +46,12 @@ public class Course {
         this.endDate = endDate;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
+    public Course(String title, String description, int capacity, LocalDate startDate, LocalDate endDate, CourseCoordinator courseCoordinator) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
         this.capacity = capacity;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+        this.courseCoordinator = courseCoordinator;
     }
 }
