@@ -91,4 +91,21 @@ public class StudentController {
         return ResponseEntity.ok().build();
     }
 
+    // This follows the PutMapping example from https://spring.io/guides/tutorials/rest/
+    @PutMapping("/{id}")
+    ResponseEntity<Student> update(@PathVariable Long id, @RequestBody Student studentNewValues) {
+        Optional<Student> optionalStudent = studentRepository.findById(id);
+
+           if (optionalStudent.isPresent()) {
+            Student student = optionalStudent.get();
+            student.setName(studentNewValues.getName());
+            student.setDateOfBirth(studentNewValues.getDateOfBirth());
+
+            return ResponseEntity.ok(studentRepository.save(student));
+        } else {
+            // PUT is idempotent here.
+            // See also: https://stackoverflow.com/questions/59796150/what-should-be-returned-for-http-put-request-if-id-does-not-exist
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

@@ -1,10 +1,22 @@
 package avd.jdm.demostudentandcourses.domain;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
+// Note:
+// @Data give a performance warning. See https://www.jpa-buddy.com/blog/lombok-and-jpa-what-may-go-wrong/
 @Entity
-public class Student {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ParttimeStudent.class, name="PARTTIME"),
+        @JsonSubTypes.Type(value = FulltimeStudent.class, name="FULLTIME")
+})
+public abstract class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
