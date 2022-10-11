@@ -1,5 +1,6 @@
-package avd.jdm.demostudentandcourses.controller.dto;
+package avd.jdm.demostudentandcourses.controller;
 
+import avd.jdm.demostudentandcourses.controller.dto.RegistrationDto;
 import avd.jdm.demostudentandcourses.domain.Student;
 import avd.jdm.demostudentandcourses.service.RegistrationService;
 import org.springframework.http.HttpStatus;
