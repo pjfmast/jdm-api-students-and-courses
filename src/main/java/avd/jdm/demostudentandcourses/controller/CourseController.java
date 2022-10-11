@@ -1,7 +1,6 @@
 package avd.jdm.demostudentandcourses.controller;
 
 import avd.jdm.demostudentandcourses.domain.Course;
-import avd.jdm.demostudentandcourses.domain.Student;
 import avd.jdm.demostudentandcourses.repository.CourseRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +25,9 @@ public class CourseController {
         List<Course> found = new ArrayList<>();
 
         if (title == null) {
-            courseRepository.findAll().forEach(found::add);
+            found.addAll(courseRepository.findAll());
         } else {
-            courseRepository.findCoursesByTitleContainingIgnoreCase(title).forEach(found::add);
+            found.addAll(courseRepository.findCoursesByTitleContainingIgnoreCase(title));
         }
         if (found.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -39,7 +38,7 @@ public class CourseController {
     @GetMapping("/upcoming")
     public ResponseEntity<List<Course>> upComingCourses() {
         List<Course> found = new ArrayList<>();
-        courseRepository.findCoursesByStartDateAfter(LocalDate.now()).forEach(found::add);
+        found.addAll(courseRepository.findCoursesByStartDateAfter(LocalDate.now()));
 
         if (found.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -55,5 +54,16 @@ public class CourseController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
+        if (!courseRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        courseRepository.deleteById(id);
+
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,6 +1,7 @@
 package avd.jdm.demostudentandcourses.domain;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,10 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Course {
 
     @Id
@@ -29,12 +34,12 @@ public class Course {
     private LocalDate endDate;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "course_coordinator_id")
+    @JoinColumn
     private CourseCoordinator courseCoordinator;
 
     // Add many-to-many relation between Course and Student.
     // performance advice ManyToMany: use Set<T> instead of List<T>
-    // todo workshop lesson 7-2b: add many-to-many relation between course and student
+    // todo workshop lesson 7: add many-to-many relation between course and student
     @ManyToMany(mappedBy = "courses")
     private Set<Student> students;
 

@@ -3,7 +3,6 @@ package avd.jdm.demostudentandcourses;
 // todo see created tables using: http://localhost:8080/h2-ui/
 
 import avd.jdm.demostudentandcourses.domain.*;
-import avd.jdm.demostudentandcourses.repository.CourseCoordinatorRepository;
 import avd.jdm.demostudentandcourses.repository.CourseRepository;
 import avd.jdm.demostudentandcourses.repository.StudentRepository;
 import org.slf4j.Logger;
@@ -25,7 +24,7 @@ public class LoadDummyData {
     CommandLineRunner is a simple Spring Boot interface with a run method. Spring Boot will automatically call the run method of all beans implementing this interface after the application context has been loaded.
      */
     @Bean
-    CommandLineRunner initDatabase(StudentRepository studentRepository, CourseRepository courseRepository, CourseCoordinatorRepository courseCoordinatorRepository) {
+    CommandLineRunner initDatabase(StudentRepository studentRepository, CourseRepository courseRepository) {
         return args -> {
 //            repository.save(new Student("naam", LocalDate.of(1998, 8, 5)));
             Student piet = new ParttimeStudent("Henk", LocalDate.of(1999, 8, 18), "CM");
@@ -42,6 +41,10 @@ public class LoadDummyData {
             Course android = new Course("Java and mobile", "Create a cool Android app...", 64, LocalDate.of(2021, 11, 8), LocalDate.of(2022, 1, 29));
             log.info("Preloading " + courseRepository.save(javaIntro));
             log.info("Preloading " + courseRepository.save(android));
+
+            CourseCoordinator patrick = new CourseCoordinator("Patrick", "patrick@avd.nl");
+            Course doorstroom = new Course("Doorstroommodule", "Alles wat je moet weten uit jaar 1...", 64, LocalDate.of(2021, 11, 8), LocalDate.of(2022, 1, 29), patrick);
+            courseRepository.save(doorstroom);
 
         };
     }
