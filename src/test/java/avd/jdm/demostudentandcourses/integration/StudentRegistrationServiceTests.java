@@ -8,6 +8,7 @@ import avd.jdm.demostudentandcourses.service.RegistrationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.Optional;
@@ -17,14 +18,22 @@ import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
-class StudentRegistrationApplicationTests {
+class StudentRegistrationServiceTests {
+
+    /* From: https://www.baeldung.com/java-spring-mockito-mock-mockbean#:~:text=We%20can%20use%20the%20%40MockBean,new%20one%20will%20be%20added.
+    We can use the @MockBean to add mock objects to the Spring application context. The mock will replace any existing bean of the same type in the application context.
+    If no bean of the same type is defined, a new one will be added.
+     */
+    @MockBean
     private StudentRepository studentRepository;
+    @MockBean
     private CourseRepository courseRepository;
 
     private RegistrationService sut;
     private Student student;
 
 
+    // @BeforeEach and @BeforeAll are the JUnit 5 equivalents of @Before and @BeforeClass.
     @BeforeEach
     void beforeEach() {
         studentRepository = mock(StudentRepository.class);
@@ -40,8 +49,8 @@ class StudentRegistrationApplicationTests {
         when(studentRepository.save(any(Student.class))).thenAnswer(i -> i.getArgument(0));
         when(courseRepository.save(any(Course.class))).thenAnswer(i -> i.getArgument(0));
 
-        when(studentRepository.findById(anyLong())).thenAnswer(i -> Optional.of(student));
-        when(courseRepository.findById(anyLong())).thenAnswer(i -> Optional.of(course));
+        when(studentRepository.findById(1L)).thenAnswer(i -> Optional.of(student));
+        when(courseRepository.findById(100L)).thenAnswer(i -> Optional.of(course));
     }
 
     @Test
@@ -52,6 +61,8 @@ class StudentRegistrationApplicationTests {
         sut.addRegistration(1L, 100L);
 
         // assert
+//        verify(mockObject, atLeast(2)).someMethod("was called at least twice");
+//        verify(mockObject, times(3)).someMethod("was called exactly three times");
         verify(studentRepository, times(1)).save(student);
     }
 

@@ -33,7 +33,7 @@ public class Course {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn
     private CourseCoordinator courseCoordinator;
 
