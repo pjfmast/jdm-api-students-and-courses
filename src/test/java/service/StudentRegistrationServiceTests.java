@@ -1,4 +1,4 @@
-package avd.jdm.demostudentandcourses.integration;
+package service;
 
 import avd.jdm.demostudentandcourses.domain.Course;
 import avd.jdm.demostudentandcourses.domain.Student;
@@ -7,17 +7,13 @@ import avd.jdm.demostudentandcourses.repository.StudentRepository;
 import avd.jdm.demostudentandcourses.service.RegistrationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.TestPropertySource;
 
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.any;
 
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application-integrationtest.properties")
 class StudentRegistrationServiceTests {
 
     /* From: https://www.baeldung.com/java-spring-mockito-mock-mockbean#:~:text=We%20can%20use%20the%20%40MockBean,new%20one%20will%20be%20added.
@@ -36,6 +32,11 @@ class StudentRegistrationServiceTests {
     // @BeforeEach and @BeforeAll are the JUnit 5 equivalents of @Before and @BeforeClass.
     @BeforeEach
     void beforeEach() {
+
+        /*
+            Mocking for unit testing is when you create an object that implements the behavior of a real subsystem in controlled ways.
+            In short, mocks are used as a replacement for a dependency.
+         */
         studentRepository = mock(StudentRepository.class);
         courseRepository = mock(CourseRepository.class);
         sut = new RegistrationService(studentRepository, courseRepository);
