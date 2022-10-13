@@ -1,4 +1,4 @@
-package service;
+package avd.jdm.demostudentandcourses.service;
 
 import avd.jdm.demostudentandcourses.domain.Course;
 import avd.jdm.demostudentandcourses.domain.Student;
@@ -11,6 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
+// Using a static import we do not need the full qualified name for calling the static methods
+// so we can use mock() instead of org.mockito..Mockito.mock()
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.any;
 
